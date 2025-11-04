@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Wallet, DollarSign, FileText } from 'lucide-react';
+import { getAllCurrencies, getCurrencySymbol, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface WalletFormProps {
   onSubmit: (formData: WalletFormData) => void;
@@ -28,7 +29,7 @@ interface FormErrors {
 export default function WalletForm({ onSubmit, onCancel, initialData, isLoading = false }: WalletFormProps) {
   const [formData, setFormData] = useState<WalletFormData>({
     name: '',
-    currency: 'USD',
+    currency: DEFAULT_CURRENCY,
     balance: 0,
     description: '',
     isDefault: false,
@@ -63,7 +64,7 @@ export default function WalletForm({ onSubmit, onCancel, initialData, isLoading 
     if (!formData.currency.trim()) {
       newErrors.currency = 'Currency is required';
     } else if (formData.currency.length !== 3) {
-      newErrors.currency = 'Currency must be 3 characters (e.g., USD)';
+      newErrors.currency = 'Currency must be 3 characters (e.g., ZAR)';
     }
 
     if (formData.balance < 0) {
@@ -88,18 +89,7 @@ export default function WalletForm({ onSubmit, onCancel, initialData, isLoading 
     onSubmit(formData);
   };
 
-  const currencyOptions = [
-    { code: 'USD', name: 'US Dollar', symbol: '$' },
-    { code: 'EUR', name: 'Euro', symbol: '€' },
-    { code: 'GBP', name: 'British Pound', symbol: '£' },
-    { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
-    { code: 'CAD', name: 'Canadian Dollar', symbol: 'C$' },
-    { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
-    { code: 'CHF', name: 'Swiss Franc', symbol: 'CHF' },
-    { code: 'CNY', name: 'Chinese Yuan', symbol: '¥' },
-    { code: 'SEK', name: 'Swedish Krona', symbol: 'kr' },
-    { code: 'NZD', name: 'New Zealand Dollar', symbol: 'NZ$' },
-  ];
+  const currencyOptions = getAllCurrencies();
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -170,7 +160,7 @@ export default function WalletForm({ onSubmit, onCancel, initialData, isLoading 
           />
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <span className="text-gray-500 text-sm">
-              {currencyOptions.find(c => c.code === formData.currency)?.symbol || formData.currency}
+              {getCurrencySymbol(formData.currency)}
             </span>
           </div>
         </div>

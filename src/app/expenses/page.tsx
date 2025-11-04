@@ -7,11 +7,13 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { api } from '@/lib/api';
 import { Receipt, Plus, Edit, Trash2, Filter, Search, Calendar, ArrowUpDown } from 'lucide-react';
 import Link from 'next/link';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface ExpenseData {
   id: number;
   description: string;
   amount: number;
+  currency: string;
   type: 'EXPENSE' | 'INCOME';
   transactionDate: string;
   category: {
@@ -133,7 +135,7 @@ export default function ExpensesPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-500">Total Expenses</p>
-                  <p className="text-2xl font-bold text-gray-900">${totalExpenses.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-gray-900">{formatAmount(totalExpenses, DEFAULT_CURRENCY)}</p>
                 </div>
               </div>
             </div>
@@ -145,7 +147,7 @@ export default function ExpensesPage() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-500">Total Income</p>
-                  <p className="text-2xl font-bold text-gray-900">${totalIncome.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-gray-900">{formatAmount(totalIncome, DEFAULT_CURRENCY)}</p>
                 </div>
               </div>
             </div>
@@ -158,7 +160,7 @@ export default function ExpensesPage() {
                 <div className="ml-4">
                   <p className="text-sm font-medium text-gray-500">Net Amount</p>
                   <p className={`text-2xl font-bold ${totalIncome - totalExpenses >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    ${(totalIncome - totalExpenses).toFixed(2)}
+                    {formatAmount(totalIncome - totalExpenses, DEFAULT_CURRENCY)}
                   </p>
                 </div>
               </div>
@@ -285,7 +287,7 @@ export default function ExpensesPage() {
                           <p className={`text-sm font-medium ${
                             expense.type === 'INCOME' ? 'text-green-600' : 'text-red-600'
                           }`}>
-                            {expense.type === 'INCOME' ? '+' : '-'}${expense.amount.toFixed(2)}
+                            {formatAmount(expense.type === 'EXPENSE' ? -expense.amount : expense.amount, expense.currency)}
                           </p>
                           <p className="text-xs text-gray-500">
                             {new Date(expense.transactionDate).toLocaleDateString()}

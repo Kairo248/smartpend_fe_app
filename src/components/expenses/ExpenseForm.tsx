@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
 import { Calendar, DollarSign, FileText, Tag, Wallet } from 'lucide-react';
+import { formatAmount, getCurrencySymbol, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface ExpenseFormProps {
   onSubmit: (data: ExpenseFormData) => Promise<void>;
@@ -33,6 +34,7 @@ interface WalletData {
   name: string;
   type: string;
   balance: number;
+  currency: string;
 }
 
 export default function ExpenseForm({ onSubmit, onCancel, initialData, isLoading = false }: ExpenseFormProps) {
@@ -200,7 +202,12 @@ export default function ExpenseForm({ onSubmit, onCancel, initialData, isLoading
           Amount
         </label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+          <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+            {formData.walletId && wallets.length > 0 
+              ? getCurrencySymbol(wallets.find(w => w.id === formData.walletId)?.currency || DEFAULT_CURRENCY)
+              : getCurrencySymbol(DEFAULT_CURRENCY)
+            }
+          </span>
           <input
             type="number"
             min="0"
@@ -264,7 +271,7 @@ export default function ExpenseForm({ onSubmit, onCancel, initialData, isLoading
           <option value="">Select a wallet...</option>
           {wallets.map((wallet) => (
             <option key={wallet.id} value={wallet.id}>
-              {wallet.name} - ${wallet.balance.toFixed(2)}
+              {wallet.name} - {formatAmount(wallet.balance, wallet.currency)}
             </option>
           ))}
         </select>

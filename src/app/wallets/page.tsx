@@ -8,6 +8,7 @@ import { api } from '@/lib/api';
 import { Wallet, Plus, Edit, Trash2, CreditCard, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { formatAmount, getCurrencySymbol, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface WalletData {
   id: number;
@@ -137,7 +138,7 @@ export default function WalletsPage() {
               <DollarSign className="h-8 w-8 mr-3" />
               <div>
                 <p className="text-blue-100 text-sm">Total Balance</p>
-                <p className="text-3xl font-bold">${totalBalance.toFixed(2)}</p>
+                <p className="text-3xl font-bold">{formatAmount(totalBalance, DEFAULT_CURRENCY)}</p>
               </div>
             </div>
           </div>
@@ -233,7 +234,7 @@ export default function WalletsPage() {
                   
                   <div className="mt-4">
                     <p className="text-2xl font-bold text-gray-900">
-                      ${wallet.balance.toFixed(2)}
+                      {formatAmount(wallet.balance, wallet.currency)}
                     </p>
                     <p className="text-sm text-gray-500">{wallet.currency}</p>
                     {wallet.description && (
