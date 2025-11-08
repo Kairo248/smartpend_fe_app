@@ -6,6 +6,9 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import DashboardLayout from '@/components/DashboardLayout';
 import { api } from '@/lib/api';
 import { PieChart, BarChart3, TrendingUp, Calendar, Download, Filter } from 'lucide-react';
+import DonutChart, { DonutChartData } from '@/components/charts/DonutChart';
+import CategoryBreakdownDonut from '@/components/charts/CategoryBreakdownDonut';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface ReportData {
   monthlyTrends: Array<{
@@ -125,7 +128,7 @@ export default function ReportsPage() {
                     <div className="ml-4">
                       <p className="text-sm font-medium text-gray-500">Avg Daily Spending</p>
                       <p className="text-2xl font-bold text-gray-900">
-                        ${reportData.spendingPatterns?.averageDailySpending?.toFixed(2) || '0.00'}
+                        {formatAmount(reportData.spendingPatterns?.averageDailySpending || 0, DEFAULT_CURRENCY)}
                       </p>
                     </div>
                   </div>
@@ -180,26 +183,83 @@ export default function ReportsPage() {
 
               {/* Charts Grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Monthly Trends Chart */}
+                {/* Monthly Income vs Expenses */}
                 <div className="bg-white rounded-lg shadow p-6">
-                  <h3 className="text-lg font-medium text-gray-900 mb-4">Monthly Trends</h3>
-                  <div className="h-64 flex items-center justify-center text-gray-500">
-                    <div className="text-center">
-                      <BarChart3 className="h-12 w-12 mx-auto mb-2" />
-                      <p>Monthly trends chart would go here</p>
-                      <p className="text-sm">Showing {selectedPeriod} months of data</p>
-                    </div>
+                  <h3 className="text-lg font-medium text-gray-900 mb-4">Income vs Expenses</h3>
+                  <div className="h-64 flex items-center justify-center">
+                    {reportData.monthlyTrends && reportData.monthlyTrends.length > 0 ? (
+                      (() => {
+                        const totalExpenses = reportData.monthlyTrends.reduce((sum, month) => sum + month.expenses, 0);
+                        const totalIncome = reportData.monthlyTrends.reduce((sum, month) => sum + month.income, 0);
+                        
+                        if (totalExpenses === 0 && totalIncome === 0) {
+                          return (
+                            <div className="text-center text-gray-500">
+                              <BarChart3 className="h-12 w-12 mx-auto mb-2" />
+                              <p>No income/expense data available</p>
+                            </div>
+                          );
+                        }
+                        
+                        const incomeExpenseData: DonutChartData[] = [
+                          {
+                            label: 'Income',
+                            value: totalIncome,
+                            color: '#10B981',
+                            percentage: (totalIncome / (totalIncome + totalExpenses)) * 100
+                          },
+                          {
+                            label: 'Expenses',
+                            value: totalExpenses,
+                            color: '#EF4444',
+                            percentage: (totalExpenses / (totalIncome + totalExpenses)) * 100
+                          }
+                        ];
+                        
+                        return (
+                          <DonutChart
+                            data={incomeExpenseData}
+                            size={240}
+                            thickness={40}
+                            showLegend={true}
+                            showLabels={false}
+                            showPercentages={true}
+                            centerText={formatAmount(totalIncome + totalExpenses, DEFAULT_CURRENCY)}
+                            centerSubtext="Total Activity"
+                          />
+                        );
+                      })()
+                    ) : (
+                      <div className="text-center text-gray-500">
+                        <BarChart3 className="h-12 w-12 mx-auto mb-2" />
+                        <p>No data available</p>
+                        <p className="text-sm">Showing {selectedPeriod} months of data</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Category Breakdown Chart */}
                 <div className="bg-white rounded-lg shadow p-6">
                   <h3 className="text-lg font-medium text-gray-900 mb-4">Category Breakdown</h3>
-                  <div className="h-64 flex items-center justify-center text-gray-500">
-                    <div className="text-center">
-                      <PieChart className="h-12 w-12 mx-auto mb-2" />
-                      <p>Category breakdown chart would go here</p>
-                    </div>
+                  <div className="h-64 flex items-center justify-center">
+                    {reportData.categoryBreakdown && reportData.categoryBreakdown.length > 0 ? (
+                      <CategoryBreakdownDonut
+                        categories={reportData.categoryBreakdown.map(cat => ({
+                          categoryName: cat.categoryName,
+                          totalAmount: cat.amount,
+                          percentage: cat.percentage,
+                          color: cat.color
+                        }))}
+                        size={240}
+                        showLegend={false}
+                      />
+                    ) : (
+                      <div className="text-center text-gray-500">
+                        <PieChart className="h-12 w-12 mx-auto mb-2" />
+                        <p>No category data available</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -228,7 +288,7 @@ export default function ReportsPage() {
                               {category.percentage.toFixed(1)}%
                             </span>
                             <span className="text-sm font-medium text-gray-900">
-                              ${category.amount.toFixed(2)}
+                              {formatAmount(category.amount, DEFAULT_CURRENCY)}
                             </span>
                           </div>
                         </div>

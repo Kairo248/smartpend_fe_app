@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/lib/api';
-import { Calendar, DollarSign, FileText, Tag, Wallet } from 'lucide-react';
+import { Calendar, Banknote, FileText, Tag, Wallet } from 'lucide-react';
 import { formatAmount, getCurrencySymbol, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface ExpenseFormProps {
@@ -159,7 +159,7 @@ export default function ExpenseForm({ onSubmit, onCancel, initialData, isLoading
                 : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
             }`}
           >
-            💸 Expense
+            Expense
           </button>
           <button
             type="button"
@@ -170,7 +170,7 @@ export default function ExpenseForm({ onSubmit, onCancel, initialData, isLoading
                 : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
             }`}
           >
-            💰 Income
+            Income
           </button>
         </div>
       </div>
@@ -198,7 +198,7 @@ export default function ExpenseForm({ onSubmit, onCancel, initialData, isLoading
       {/* Amount */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          <DollarSign className="inline h-4 w-4 mr-1" />
+          <Banknote className="inline h-4 w-4 mr-1" />
           Amount
         </label>
         <div className="relative">

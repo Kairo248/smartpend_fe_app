@@ -9,6 +9,7 @@ import ExpenseForm, { ExpenseFormData } from '@/components/expenses/ExpenseForm'
 import { api } from '@/lib/api';
 import { Receipt, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface ExpenseData {
   id: number;
@@ -78,7 +79,7 @@ export default function EditExpensePage() {
       const expenseData = {
         description: formData.description,
         amount: formData.amount,
-        currency: expense?.currency || 'USD', // Use existing currency or default
+        currency: expense?.currency || DEFAULT_CURRENCY, // Use existing currency or default
         type: formData.type,
         categoryId: formData.categoryId,
         walletId: formData.walletId,

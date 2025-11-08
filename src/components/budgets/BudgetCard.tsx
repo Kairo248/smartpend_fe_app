@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Edit, Trash2, AlertTriangle, Calendar, Target, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface Budget {
   id: number;
@@ -40,10 +41,7 @@ export default function BudgetCard({ budget, onDelete, onUpdate }: BudgetCardPro
   const [showMenu, setShowMenu] = useState(false);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+    return formatAmount(amount, DEFAULT_CURRENCY);
   };
 
   const formatDate = (dateString: string) => {
@@ -69,6 +67,16 @@ export default function BudgetCard({ budget, onDelete, onUpdate }: BudgetCardPro
   };
 
   const getStatusText = () => {
+    console.log(`Budget "${budget.name}" debug:`, {
+      spentAmount: budget.spentAmount,
+      budgetAmount: budget.amount,
+      spentPercentage: budget.spentPercentage,
+      isOverBudget: budget.isOverBudget,
+      shouldAlert: budget.shouldAlert,
+      alertThreshold: budget.alertThreshold,
+      isExpired: budget.isExpired
+    });
+    
     if (budget.isOverBudget) return 'Over Budget';
     if (budget.shouldAlert) return 'Needs Attention';
     if (budget.isExpired) return 'Expired';

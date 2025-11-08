@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Wallet, DollarSign, FileText } from 'lucide-react';
+import { Wallet, Banknote, FileText } from 'lucide-react';
 import { getAllCurrencies, getCurrencySymbol, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface WalletFormProps {
@@ -117,7 +117,7 @@ export default function WalletForm({ onSubmit, onCancel, initialData, isLoading 
       {/* Currency */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          <DollarSign className="inline h-4 w-4 mr-1" />
+          <Banknote className="inline h-4 w-4 mr-1" />
           Currency *
         </label>
         <select
@@ -142,7 +142,7 @@ export default function WalletForm({ onSubmit, onCancel, initialData, isLoading 
       {/* Initial Balance */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          <DollarSign className="inline h-4 w-4 mr-1" />
+          <Banknote className="inline h-4 w-4 mr-1" />
           Initial Balance *
         </label>
         <div className="relative">

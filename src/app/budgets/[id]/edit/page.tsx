@@ -9,6 +9,7 @@ import BudgetForm from '@/components/budgets/BudgetForm';
 import { api } from '@/lib/api';
 import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface Budget {
   id: number;
@@ -235,7 +236,7 @@ export default function EditBudgetPage() {
               <div>
                 <h3 className="text-lg font-medium text-blue-900">Current Budget Status</h3>
                 <p className="text-blue-700 mt-1">
-                  ${budget.spentAmount.toFixed(2)} spent of ${budget.amount.toFixed(2)} 
+                  {formatAmount(budget.spentAmount, DEFAULT_CURRENCY)} spent of {formatAmount(budget.amount, DEFAULT_CURRENCY)} 
                   ({budget.spentPercentage.toFixed(1)}% used)
                 </p>
               </div>

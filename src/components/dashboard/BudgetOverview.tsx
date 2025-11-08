@@ -2,6 +2,8 @@
 
 import { AlertTriangle, Target, TrendingUp, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
+import BudgetProgressDonut from '@/components/charts/BudgetProgressDonut';
 
 interface BudgetOverviewProps {
   budgetSummary: {
@@ -27,10 +29,7 @@ interface BudgetOverviewProps {
 
 export default function BudgetOverview({ budgetSummary, budgetAlerts }: BudgetOverviewProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+    return formatAmount(amount, DEFAULT_CURRENCY);
   };
 
   const getAlertColor = (alertType: string, spentPercentage: number) => {
@@ -63,43 +62,41 @@ export default function BudgetOverview({ budgetSummary, budgetAlerts }: BudgetOv
           </Link>
         </div>
 
-        {/* Budget Summary Stats */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3 mb-6">
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-gray-900">
-              {formatCurrency(budgetSummary.totalBudgeted)}
+        {/* Budget Summary with Donut Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Summary Stats */}
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-4">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <div className="text-2xl font-semibold text-blue-600">
+                  {formatCurrency(budgetSummary.totalBudgeted)}
+                </div>
+                <div className="text-sm text-gray-600">Total Budgeted</div>
+              </div>
+              <div className="bg-red-50 p-4 rounded-lg">
+                <div className="text-2xl font-semibold text-red-600">
+                  {formatCurrency(budgetSummary.totalSpent)}
+                </div>
+                <div className="text-sm text-gray-600">Total Spent</div>
+              </div>
+              <div className="bg-green-50 p-4 rounded-lg">
+                <div className="text-2xl font-semibold text-green-600">
+                  {formatCurrency(budgetSummary.totalRemaining)}
+                </div>
+                <div className="text-sm text-gray-600">Remaining</div>
+              </div>
             </div>
-            <div className="text-sm text-gray-500">Total Budgeted</div>
           </div>
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-gray-900">
-              {formatCurrency(budgetSummary.totalSpent)}
-            </div>
-            <div className="text-sm text-gray-500">Total Spent</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-semibold text-green-600">
-              {formatCurrency(budgetSummary.totalRemaining)}
-            </div>
-            <div className="text-sm text-gray-500">Remaining</div>
-          </div>
-        </div>
 
-        {/* Budget Progress Bar */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700">
-              Overall Budget Usage
-            </span>
-            <span className="text-sm text-gray-500">
-              {budgetSummary.budgetUtilization.toFixed(1)}%
-            </span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className={`h-2 rounded-full transition-all duration-300 ${getBudgetProgressColor(budgetSummary.budgetUtilization)}`}
-              style={{ width: `${Math.min(budgetSummary.budgetUtilization, 100)}%` }}
-            ></div>
+          {/* Budget Usage Donut Chart */}
+          <div className="flex justify-center items-center">
+            <BudgetProgressDonut
+              spentAmount={budgetSummary.totalSpent}
+              totalAmount={budgetSummary.totalBudgeted}
+              size={200}
+              thickness={30}
+              showLegend={true}
+            />
           </div>
         </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { TrendingUp, TrendingDown, Target, AlertTriangle, DollarSign, Calendar } from 'lucide-react';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 export interface BudgetStatsData {
   totalBudgets: number;
@@ -33,10 +34,7 @@ interface BudgetStatsProps {
 
 export default function BudgetStats({ stats, budgetSummary, isLoading = false }: BudgetStatsProps) {
   const formatCurrency = (amount: number) => 
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+    formatAmount(amount, DEFAULT_CURRENCY);
 
   const formatPercentage = (value: number) => `${value.toFixed(1)}%`;
 

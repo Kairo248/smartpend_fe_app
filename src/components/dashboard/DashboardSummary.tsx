@@ -1,6 +1,7 @@
 'use client';
 
 import { DollarSign, TrendingUp, TrendingDown, Wallet, AlertTriangle, Target } from 'lucide-react';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface DashboardSummaryProps {
   summary: {
@@ -25,10 +26,7 @@ interface DashboardSummaryProps {
 
 export default function DashboardSummary({ summary }: DashboardSummaryProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+    return formatAmount(amount, DEFAULT_CURRENCY);
   };
 
   const formatPercentage = (percentage: number) => {

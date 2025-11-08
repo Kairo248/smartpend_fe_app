@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Calendar, DollarSign, AlertTriangle, FileText, Target, Clock } from 'lucide-react';
+import { Calendar, Banknote, AlertTriangle, FileText, Target, Clock } from 'lucide-react';
 import { api } from '@/lib/api';
 
 interface Category {
@@ -202,7 +202,7 @@ export default function BudgetForm({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="amount" className="block text-sm font-medium text-gray-700 mb-2">
-              <DollarSign className="inline h-4 w-4 mr-1" />
+              <Banknote className="inline h-4 w-4 mr-1" />
               Budget Amount
             </label>
             <input

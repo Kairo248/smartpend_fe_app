@@ -2,6 +2,7 @@
 
 import { Receipt, TrendingUp, TrendingDown, Eye } from 'lucide-react';
 import Link from 'next/link';
+import { formatAmount, DEFAULT_CURRENCY } from '@/lib/currency';
 
 interface RecentTransactionsProps {
   transactions: Array<{
@@ -18,10 +19,7 @@ interface RecentTransactionsProps {
 
 export default function RecentTransactions({ transactions }: RecentTransactionsProps) {
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
+    return formatAmount(amount, DEFAULT_CURRENCY);
   };
 
   const formatDate = (dateString: string) => {

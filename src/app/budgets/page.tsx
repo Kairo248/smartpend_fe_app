@@ -68,10 +68,14 @@ export default function BudgetsPage() {
   const fetchBudgets = async () => {
     try {
       setLoading(true);
+      const timestamp = new Date().getTime();
       const [budgetsResponse, summaryResponse] = await Promise.all([
-        api.get('/budgets'),
-        api.get('/budgets/summary'),
+        api.get(`/budgets?_t=${timestamp}`),
+        api.get(`/budgets/summary?_t=${timestamp}`),
       ]);
+      
+      console.log('Raw budget data:', budgetsResponse.data);
+      console.log('Budget summary data:', summaryResponse.data);
       
       setBudgets(budgetsResponse.data);
       setBudgetSummary(summaryResponse.data);
@@ -177,13 +181,25 @@ export default function BudgetsPage() {
               <h1 className="text-3xl font-bold text-gray-900">Budget Management</h1>
               <p className="text-gray-600">Track and manage your spending limits</p>
             </div>
-            <Link
-              href="/budgets/new"
-              className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
-            >
-              <Plus className="h-5 w-5 mr-2" />
-              Create Budget
-            </Link>
+            <div className="flex space-x-3">
+              <button
+                onClick={fetchBudgets}
+                disabled={loading}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
+              >
+                <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+              </button>
+              <Link
+                href="/budgets/new"
+                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              >
+                <Plus className="h-5 w-5 mr-2" />
+                Create Budget
+              </Link>
+            </div>
           </div>
 
           {/* Budget Summary Stats */}
